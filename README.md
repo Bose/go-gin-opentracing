@@ -1,4 +1,4 @@
-# go-gin-prometheus
+# go-gin-opentracing
 [![](https://godoc.org/github.com/Bose/go-gin-opentracing?status.svg)](https://godoc.org/github.com/Bose/go-gin-opentracing) 
 
 Gin Web Framework Open Tracing middleware
