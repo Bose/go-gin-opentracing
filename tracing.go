@@ -102,6 +102,9 @@ func StartDBSpanWithParent(parent opentracing.SpanContext, operationName, dbInst
 	if len(dbType) > 0 {
 		options = append(options, opentracing.Tag{Key: string(ext.DBType), Value: dbType})
 	}
+	if len(dbStatement) > 0 {
+		options = append(options, opentracing.Tag{Key: string(ext.DBStatement), Value: dbStatement})
+	}
 
 	if parent != nil {
 		options = append(options, opentracing.ChildOf(parent))
