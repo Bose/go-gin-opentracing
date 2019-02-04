@@ -20,11 +20,10 @@ func OpenTracer(operationPrefix []byte) gin.HandlerFunc {
 		} else {
 			span = StartSpanWithHeader(&c.Request.Header, string(operationPrefix)+c.Request.Method, c.Request.Method, c.Request.URL.Path)
 		}
-		defer span.SetTag(string(ext.HTTPStatusCode), c.Writer.Status()) // this must be before the defer finish to be properly located in the defer stack
-		defer span.Finish()                                              // after all the other defers are completed.. finish the span
-		c.Set("tracing-context", span)                                   // add the span to the context so it can be used for the duration of the request.
+		defer span.Finish()            // after all the other defers are completed.. finish the span
+		c.Set("tracing-context", span) // add the span to the context so it can be used for the duration of the request.
 		c.Next()
 
-		// after request is handled...
+		span.SetTag(string(ext.HTTPStatusCode), c.Writer.Status())
 	}
 }
