@@ -7,6 +7,13 @@ Gin Web Framework Open Tracing middleware
 
 `$ go get github.com/Bose/go-gin-opentracing`
 
+### Deprecated functions (Feb 2019)
+The following functions are deprecated since they use deprecated jaeger client functions and fixing them would require breaking changes.  
+
+- InitDevelopment
+- InitProduction
+- InitMacDocker
+
 ## Usage
 
 ```go
@@ -16,9 +23,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/Bose/go-gin-opentracing"
+	ginopentracing "github.com/Bose/go-gin-opentracing"
 	"github.com/gin-gonic/gin"
-	opentracing "github.com/opentracing/opentracing-go"
+	"github.com/opentracing/opentracing-go"
 )
 
 func main() {
@@ -27,15 +34,13 @@ func main() {
 	if err != nil {
 		hostName = "unknown"
 	}
-
-	tracer, closer, err := ginopentracing.Config.New(fmt.Sprintf("example.go::%s", hostName))
-	if err == nil {
-		fmt.Println("Setting global tracer")
-		defer closer.Close()
-		opentracing.SetGlobalTracer(tracer)
-	} else {
-		fmt.Println("Can't enable tracing: ", err.Error())
+	tracer, reporter, closer, err := ginopentracing.InitTracing(fmt.Sprintf("go-gin-opentracing-example::%s", hostName), "localhost:5775", ginopentracing.WithEnableInfoLog(true))
+	if err != nil {
+		panic("unable to init tracing")
 	}
+	defer closer.Close()
+	defer reporter.Close()
+	opentracing.SetGlobalTracer(tracer)
 
 	p := ginopentracing.OpenTracer([]byte("api-request-"))
 	r.Use(p)
