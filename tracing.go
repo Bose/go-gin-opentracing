@@ -51,6 +51,7 @@ func WithSampleProbability(sampleProbability float64) Option {
 	return func(o *options) {
 		o.sampleProbability = sampleProbability
 	}
+}
 
 // WithEnableInfoLog - optional: enable Info logging for tracing
 func WithEnableInfoLog(enable bool) Option {
