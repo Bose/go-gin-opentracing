@@ -49,5 +49,5 @@ func main() {
 
 ```
 
-See the [example.go file](https://github.com/github.com/Bose/go-gin-opentracing/blob/master/example/example.go)
+See the [example.go file](https://github.com/Bose/go-gin-opentracing/blob/master/example/example.go)
 
