@@ -1,7 +1,7 @@
 # go-gin-opentracing
 [![](https://godoc.org/github.com/Bose/go-gin-opentracing?status.svg)](https://godoc.org/github.com/Bose/go-gin-opentracing) 
 [![Go Report Card](https://goreportcard.com/badge/github.com/Bose/go-gin-opentracing)](https://goreportcard.com/report/github.com/Bose/go-gin-opentracing)
-[![Release](https://img.shields.io/github/release/Bose/go-gin-opentracing.svg?style=flat-square)](https://Bose/go-gin-opentracing/releases) 
+[![Release](https://img.shields.io/github/release/Bose/go-gin-opentracing.svg?style=flat-square)](https://github.com/Bose/go-gin-opentracing/releases) 
 
 Gin Web Framework Open Tracing middleware
 
