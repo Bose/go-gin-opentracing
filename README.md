@@ -9,13 +9,6 @@ Gin Web Framework Open Tracing middleware
 
 `$ go get github.com/Bose/go-gin-opentracing`
 
-### Deprecated functions (Feb 2019)
-The following functions are deprecated since they use deprecated jaeger client functions and fixing them would require breaking changes.  
-
-- InitDevelopment
-- InitProduction
-- InitMacDocker
-
 ## Usage
 
 ```go
