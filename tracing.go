@@ -29,7 +29,7 @@ func (l LogrusAdapter) Error(msg string) {
 // Infof - logrus adapter for span info logging
 func (l LogrusAdapter) Infof(msg string, args ...interface{}) {
 	if l.InfoLevel {
-		logrus.Infof(msg, args)
+		logrus.Infof(msg, args...)
 	}
 }
 
