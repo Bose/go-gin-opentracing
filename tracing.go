@@ -85,7 +85,9 @@ func InitTracing(serviceName string, tracingAgentHostPort string, opt ...Option)
 			jaeger.ReporterOptions.Logger(logAdapt),
 		),
 	)
-	sampler := jaeger.NewConstSampler(true)
+
+	var sampler jaeger.Sampler
+	sampler = jaeger.NewConstSampler(true)
 	if opts.sampleProbability > 0 {
 		fmt.Println("probable")
 		sampler, err = jaeger.NewProbabilisticSampler(opts.sampleProbability)
