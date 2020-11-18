@@ -64,10 +64,7 @@ func StartSpanWithHeader(header *http.Header, operationName, method, path string
 	if header != nil {
 		wireContext, _ = opentracing.GlobalTracer().Extract(opentracing.HTTPHeaders, opentracing.HTTPHeadersCarrier(*header))
 	}
-	span := StartSpanWithParent(wireContext, operationName, method, path)
-	span.SetTag("current-goroutines", runtime.NumGoroutine())
-	return span
-	// return StartSpanWithParent(wireContext, operationName, method, path)
+	return StartSpanWithParent(wireContext, operationName, method, path)
 }
 
 // InjectTraceID injects the span ID into the provided HTTP header object, so that the
