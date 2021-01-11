@@ -13,6 +13,7 @@ import (
 )
 
 var repo *db.Repository
+
 func main() {
 
 	repo = db.NewRepository()
@@ -36,21 +37,22 @@ func main() {
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(200, "Hello world!")
 	})
+	r.GET("/getBook", handleGetBook)
 
 	r.Run(":29090")
 }
 
-
 type getBookRequest struct {
 	Genre string `uri:"genre"`
 }
-func sayHello(ctx *gin.Context) {
+
+func handleGetBook(ctx *gin.Context) {
 
 	var span opentracing.Span
 	if cspan, ok := ctx.Get("tracing-context"); ok {
-		span = ginopentracing.StartSpanWithParent(cspan.(opentracing.Span).Context(), "get-genre", ctx.Request.Method, ctx.Request.URL.Path)	
+		span = ginopentracing.StartSpanWithParent(cspan.(opentracing.Span).Context(), "get-book", ctx.Request.Method, ctx.Request.URL.Path)
 	} else {
-		span = ginopentracing.StartSpanWithHeader(&ctx.Request.Header, "get-genre", ctx.Request.Method, ctx.Request.URL.Path)
+		span = ginopentracing.StartSpanWithHeader(&ctx.Request.Header, "get-book", ctx.Request.Method, ctx.Request.URL.Path)
 	}
 	defer span.Finish()
 	var req getBookRequest
@@ -60,8 +62,7 @@ func sayHello(ctx *gin.Context) {
 		return
 	}
 
-	
-	book, err:= repo.GetBooks(ctx, req.Genre)
+	book, err := repo.GetBooks(ctx, req.Genre)
 
 	if err != nil {
 		span.SetTag("error", true)
@@ -69,9 +70,6 @@ func sayHello(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, err)
 		return
 	}
-
-	
-
 
 	ctx.JSON(http.StatusOK, book.Name)
 }

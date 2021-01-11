@@ -48,9 +48,9 @@ func (r *Repository) GetBooks(
 	
 	var span opentracing.Span
 	if cspan, ok := ctx.Get("tracing-context"); ok {
-		span = ginopentracing.StartDBSpanWithParent(cspan.(opentracing.Span).Context(), "getBook", "posgres", "sql", "select")	
+		span = ginopentracing.StartDBSpanWithParent(cspan.(opentracing.Span).Context(), "returnBook", "posgres", "sql", "select")	
 	} else {
-		span = ginopentracing.StartSpanWithHeader(&ctx.Request.Header, "getBook", ctx.Request.Method, ctx.Request.URL.Path)
+		span = ginopentracing.StartSpanWithHeader(&ctx.Request.Header, "returnBook", ctx.Request.Method, ctx.Request.URL.Path)
 	}
 	defer span.Finish()
 
