@@ -37,7 +37,7 @@ func main() {
 	r.GET("/", func(c *gin.Context) {
 		c.JSON(200, "Hello world!")
 	})
-	r.GET("/getBook", handleGetBook)
+	r.GET("/getBook/:genre", handleGetBook)
 
 	r.Run(":29090")
 }
@@ -71,5 +71,5 @@ func handleGetBook(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusOK, book.Name)
+	ctx.JSON(http.StatusOK, book)
 }

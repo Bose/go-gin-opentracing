@@ -6,13 +6,11 @@ import (
 	"log"
 	"os"
 
-	
 	ginopentracing "github.com/Bose/go-gin-opentracing"
 	"github.com/gin-gonic/gin"
 	_ "github.com/lib/pq" //need this here
 	"github.com/opentracing/opentracing-go"
 )
-
 
 var dbDriver = os.Getenv("DB_DRIVER")
 var dbSource = os.Getenv("DB_SOURCE")
@@ -41,29 +39,44 @@ func NewRepository() *Repository {
 func (r *Repository) GetBooks(
 	ctx *gin.Context,
 	genre string,
-) (Book, error) {
+) ([]Book, error) {
 	query := `SELECT name, author, genre FROM book
-	WHERE name = $1 LIMIT 1`
+	WHERE genre = $1`
 
-	
 	var span opentracing.Span
 	if cspan, ok := ctx.Get("tracing-context"); ok {
-		span = ginopentracing.StartDBSpanWithParent(cspan.(opentracing.Span).Context(), "returnBook", "posgres", "sql", "select")	
+		span = ginopentracing.StartDBSpanWithParent(cspan.(opentracing.Span).Context(), "returnBook", "postgres", "sql", "select")
 	} else {
 		span = ginopentracing.StartSpanWithHeader(&ctx.Request.Header, "returnBook", ctx.Request.Method, ctx.Request.URL.Path)
 	}
 	defer span.Finish()
 
-	
-	rows := r.db.QueryRowContext(ctx, query, genre)
+	rows, err := r.db.QueryContext(ctx, query, genre)
 
-	var i Book
-	err := rows.Scan(
-		&i.Name,
-		&i.Author,
-		&i.Genre,
-	)
-	return i, err
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+	books := []Book{}
+	for rows.Next() {
+		var i Book
+		if err := rows.Scan(
+			&i.Name,
+			&i.Author,
+			&i.Genre,
+		); err != nil {
+			return nil, err
+		}
+		books = append(books, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return books, nil
 }
 
 // Close calls close on the underlying db connection.
