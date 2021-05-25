@@ -61,7 +61,7 @@ func WithEnableInfoLog(enable bool) Option {
 }
 
 // InitTracing - init opentracing with options (WithSampleProbability, WithEnableInfoLog) defaults: constant sampling, no info logging
-func InitTracing(serviceName string, tracingAgentHostPort string, opt ...Option) (
+func InitTracing(serviceName string, transport jaeger.Transport, opt ...Option) (
 	tracer opentracing.Tracer,
 	reporter jaeger.Reporter,
 	closer io.Closer,
@@ -72,10 +72,6 @@ func InitTracing(serviceName string, tracingAgentHostPort string, opt ...Option)
 	}
 	factory := jaegerprom.New()
 	metrics := jaeger.NewMetrics(factory, map[string]string{"lib": "jaeger"})
-	transport, err := jaeger.NewUDPTransport(tracingAgentHostPort, 0)
-	if err != nil {
-		return tracer, reporter, closer, err
-	}
 
 	logAdapt := LogrusAdapter{InfoLevel: opts.enableInfoLog}
 	reporter = jaeger.NewCompositeReporter(

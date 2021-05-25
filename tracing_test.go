@@ -10,6 +10,7 @@ import (
 	"github.com/opentracing/opentracing-go"
 	"github.com/opentracing/opentracing-go/mocktracer"
 	"github.com/sirupsen/logrus"
+	jaeger "github.com/uber/jaeger-client-go"
 )
 
 func TestGeneral(t *testing.T) {
@@ -35,7 +36,13 @@ func TestGeneral(t *testing.T) {
 	is.True(spans[0].OperationName == "api-request-GET")
 
 	logrus.SetLevel(logrus.DebugLevel)
-	tracer, _, closer, err := InitTracing("go-gin-opentracing-example::localhost", "localhost:5775", WithEnableInfoLog(true), WithSampleProbability(1.0))
+
+	transport, err := jaeger.NewUDPTransport("localhost:5775", 0)
+	if err != nil {
+		is.NoErr(err)
+	}
+
+	tracer, _, closer, err := InitTracing("go-gin-opentracing-example::localhost", transport, WithEnableInfoLog(true), WithSampleProbability(1.0))
 	if err != nil {
 		panic("unable to init tracing")
 	}
